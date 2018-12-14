@@ -50,6 +50,11 @@ class COCODataset(torch.utils.data.Dataset):
             image, _ = self.transform(image)
         return image
 
+    def get_img_info(self, index):
+        image_id = self.ids[index]
+        img_data = self.coco.imgs[image_id]
+        return img_data
+
     def get_annotation(self, index):
         image_id = self.ids[index]
         return image_id, self._get_annotation(image_id)

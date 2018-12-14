@@ -6,11 +6,13 @@ from PIL import Image
 from tqdm import tqdm
 from ssd.config import cfg
 from ssd.data.datasets import COCODataset, VOCDataset
+from ssd.modeling.data_preprocessing import PredictionTransform
 from ssd.modeling.predictor import Predictor
 from ssd.modeling.vgg_ssd import build_ssd_model
 import argparse
 import numpy as np
 
+from ssd.utils import box_utils
 from ssd.utils.viz import draw_bounding_boxes
 
 
@@ -39,11 +41,15 @@ def run_demo(cfg, weights_file, iou_threshold, score_threshold, images_dir, outp
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
+    transform = PredictionTransform(cfg.INPUT.IMAGE_SIZE, cfg.INPUT.PIXEL_MEAN)
     for image_path in tqdm(image_paths):
-        image = Image.open(image_path).convert("RGB")
-        image = np.array(image)
-        output = predictor.predict(image)
+        image = np.array(Image.open(image_path).convert("RGB"))
+        height, width, _ = image.shape
+        images, _, _ = transform(image)
+        images = images.unsqueeze(0)
+        output = predictor.predict(images)[0]
         boxes, labels, scores = [o.to(cpu_device).numpy() for o in output]
+        box_utils.resize_boxes(boxes, cfg.INPUT.IMAGE_SIZE, cfg.INPUT.IMAGE_SIZE, width, height)
         drawn_image = draw_bounding_boxes(image, boxes, labels, scores, class_names).astype(np.uint8)
         image_name = os.path.basename(image_path)
         Image.fromarray(drawn_image).save(os.path.join(output_dir, image_name))

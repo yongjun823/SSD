@@ -19,10 +19,9 @@ def voc_evaluation(dataset, predictions, output_dir):
 
     for i in range(len(dataset)):
         image_id, annotation = dataset.get_annotation(i)
-        gt_boxes, gt_labels, is_difficult = annotation
-        gt_boxes_list.append(gt_boxes)
-        gt_labels_list.append(gt_labels)
-        gt_difficults.append(is_difficult.astype(np.bool))
+        gt_boxes_list.append(annotation['boxes'])
+        gt_labels_list.append(annotation['labels'])
+        gt_difficults.append(annotation['difficult'])
 
         boxes, labels, scores = predictions[i]
         pred_boxes_list.append(boxes)

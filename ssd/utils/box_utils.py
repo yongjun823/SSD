@@ -136,3 +136,11 @@ def corner_form_to_center_form(boxes):
         (boxes[..., :2] + boxes[..., 2:]) / 2,
         boxes[..., 2:] - boxes[..., :2]
     ], boxes.dim() - 1)
+
+
+def resize_boxes(boxes, width, height, new_width, new_height):
+    boxes[..., 0] = boxes[..., 0] / width * new_width
+    boxes[..., 1] = boxes[..., 1] / height * new_height
+    boxes[..., 2] = boxes[..., 2] / width * new_width
+    boxes[..., 3] = boxes[..., 3] / height * new_height
+    return boxes

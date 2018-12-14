@@ -54,6 +54,6 @@ class PredictionTransform:
             ToTensor()
         ])
 
-    def __call__(self, image):
-        image, _, _ = self.transform(image)
-        return image
+    def __call__(self, image, boxes=None, labels=None):
+        image, boxes, labels = self.transform(image, boxes, labels)
+        return image, boxes, labels

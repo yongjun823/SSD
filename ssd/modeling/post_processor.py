@@ -17,14 +17,13 @@ class PostProcessor:
         self.max_per_class = max_per_class
         self.max_per_image = max_per_image
 
-    def __call__(self, confidences, locations, width=None, height=None, batch_ids=None):
+    def __call__(self, confidences, locations, width=None, height=None):
         """filter result using nms
         Args:
             confidences: (batch_size, num_priors, num_classes)
             locations: (batch_size, num_priors, 4)
             width(int): un-normalized using width
             height(int): un-normalized using height
-            batch_ids: which batch to filter ?
         Returns:
             List[(boxes, labels, scores)],
             boxes: (n, 4)
@@ -35,15 +34,6 @@ class PostProcessor:
             width = self.width
         if height is None:
             height = self.height
-
-        batch_size = confidences.size(0)
-        if batch_ids is None:
-            batch_ids = torch.arange(batch_size, device=confidences.device)
-        else:
-            batch_ids = torch.tensor(batch_ids, device=confidences.device)
-
-        locations = locations[batch_ids]
-        confidences = confidences[batch_ids]
 
         results = []
         for decoded_boxes, scores in zip(locations, confidences):

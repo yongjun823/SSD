@@ -67,5 +67,6 @@ _C.TEST.CONFIDENCE_THRESHOLD = 0.01
 # change MAX_PER_CLASS to 400 as official caffe code will slightly increase mAP(0.8025=>0.8063, 0.7783=>0.7798)
 _C.TEST.MAX_PER_CLASS = 200
 _C.TEST.MAX_PER_IMAGE = -1
+_C.TEST.BATCH_SIZE = 32
 
 _C.OUTPUT_DIR = 'output'

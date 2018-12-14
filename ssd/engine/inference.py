@@ -1,15 +1,19 @@
+import functools
 import logging
 import os
+from math import ceil
 
 import torch
 import torch.utils.data
+from torch.utils.data import Subset, DataLoader
 from tqdm import tqdm
-from ssd.data.datasets import build_dataset
+from ssd.data.datasets import build_dataset, predict_collate_fn
 from ssd.data.datasets.evaluation import evaluate
+from ssd.modeling.data_preprocessing import PredictionTransform
 from ssd.modeling.predictor import Predictor
 from ssd.modeling.ssd import SSD
 
-from ssd.utils import distributed_util
+from ssd.utils import distributed_util, box_utils
 
 
 def _accumulate_predictions_from_multiple_gpus(predictions_per_gpu):
@@ -52,18 +56,30 @@ def _evaluation(cfg, dataset_name, test_dataset, predictor, distributed, output_
     indices = list(range(len(test_dataset)))
     if distributed:
         indices = indices[distributed_util.get_rank()::distributed_util.get_world_size()]
+    dataset = Subset(test_dataset, indices)
 
+    loader = DataLoader(dataset=dataset,
+                        batch_size=cfg.TEST.BATCH_SIZE,
+                        shuffle=False,
+                        num_workers=4,
+                        collate_fn=predict_collate_fn,
+                        drop_last=False)
     # show progress bar only on main process.
-    progress_bar = tqdm if distributed_util.is_main_process() else iter
+    args_tqdm = functools.partial(tqdm, total=int(ceil(len(indices) / cfg.TEST.BATCH_SIZE)), unit=' img', unit_scale=cfg.TEST.BATCH_SIZE)
+    progress_bar = args_tqdm if distributed_util.is_main_process() else iter
     logger.info('Progress on {} 0:'.format(cfg.MODEL.DEVICE.upper()))
     predictions = {}
-    for i in progress_bar(indices):
-        image = test_dataset.get_image(i)
-        output = predictor.predict(image)
-        boxes, labels, scores = [o.to(cpu_device).numpy() for o in output]
-        predictions[i] = (boxes, labels, scores)
+    for i, (images, _, _) in progress_bar(enumerate(loader)):
+        results = predictor.predict(images)
+        for j, result in enumerate(results):
+            origin_index = indices[i * cfg.TEST.BATCH_SIZE + j]
+            boxes, labels, scores = [o.to(cpu_device).numpy() for o in result]
+            img_info = test_dataset.get_img_info(origin_index)
+            boxes = box_utils.resize_boxes(boxes, cfg.INPUT.IMAGE_SIZE, cfg.INPUT.IMAGE_SIZE, img_info['width'], img_info['height'])
+            predictions[origin_index] = (boxes, labels, scores)
     distributed_util.synchronize()
     predictions = _accumulate_predictions_from_multiple_gpus(predictions)
+
     if not distributed_util.is_main_process():
         return
 
@@ -78,7 +94,8 @@ def do_evaluation(cfg, model, output_dir, distributed):
     if isinstance(model, torch.nn.parallel.DistributedDataParallel):
         model = model.module
     assert isinstance(model, SSD), 'Wrong module.'
-    test_datasets = build_dataset(dataset_list=cfg.DATASETS.TEST, is_test=True)
+    transform = PredictionTransform(cfg.INPUT.IMAGE_SIZE, cfg.INPUT.PIXEL_MEAN)
+    test_datasets = build_dataset(dataset_list=cfg.DATASETS.TEST, transform=transform, is_test=True)
     device = torch.device(cfg.MODEL.DEVICE)
     model.eval()
     predictor = Predictor(cfg=cfg,
