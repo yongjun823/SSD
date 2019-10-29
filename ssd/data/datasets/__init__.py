@@ -3,10 +3,12 @@ from torch.utils.data import ConcatDataset
 from ssd.config.path_catlog import DatasetCatalog
 from .voc import VOCDataset
 from .coco import COCODataset
+from .picking import PICKDataset
 
 _DATASETS = {
     'VOCDataset': VOCDataset,
     'COCODataset': COCODataset,
+    'PICKDataset': PICKDataset
 }
 
 
@@ -19,8 +21,8 @@ def build_dataset(dataset_list, transform=None, target_transform=None, is_train=
         factory = _DATASETS[data['factory']]
         args['transform'] = transform
         args['target_transform'] = target_transform
-        if factory == VOCDataset:
-            args['keep_difficult'] = not is_train
+        if factory == VOCDataset or factory == PICKDataset:
+            args['keep_difficult'] = not is_train    
         elif factory == COCODataset:
             args['remove_empty'] = is_train
         dataset = factory(**args)

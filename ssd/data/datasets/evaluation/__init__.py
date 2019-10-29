@@ -1,4 +1,4 @@
-from ssd.data.datasets import VOCDataset, COCODataset
+from ssd.data.datasets import VOCDataset, COCODataset, PICKDataset
 from .coco import coco_evaluation
 from .voc import voc_evaluation
 
@@ -16,7 +16,7 @@ def evaluate(dataset, predictions, output_dir, **kwargs):
     args = dict(
         dataset=dataset, predictions=predictions, output_dir=output_dir, **kwargs,
     )
-    if isinstance(dataset, VOCDataset):
+    if isinstance(dataset, VOCDataset) or isinstance(dataset, PICKDataset):
         return voc_evaluation(**args)
     elif isinstance(dataset, COCODataset):
         return coco_evaluation(**args)
