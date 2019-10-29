@@ -8,6 +8,10 @@ class DatasetCatalog:
             "data_dir": "PICKING",
             "split": "train"
         },
+        'picking_test': {
+            "data_dir": "PICKING",
+            "split": "test"
+        },
         'voc_2007_train': {
             "data_dir": "VOC2007",
             "split": "train"

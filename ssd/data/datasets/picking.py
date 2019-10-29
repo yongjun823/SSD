@@ -8,28 +8,7 @@ from ssd.structures.container import Container
 
 
 class PICKDataset(torch.utils.data.Dataset):
-    class_names = ('__background__',
-                   'Apple_porcelain',
-                    'Beer',
-                    'Book', 
-                    'Carbonated_drinks', 
-                    'Cup', 
-                    'Dispenser', 
-                    'Desk_lamp', 
-                    'Drugs', 
-                    'Glasses_case',
-                    'Kettle',
-                    'Milk',
-                    'Mug',
-                    'Metal_box',
-                    'Nipper',
-                    'Plate',
-                    'Potato_chips',
-                    'Seasoning_sauce',
-                    'Spoon',
-                    'Stick_snacks',
-                    'Toy',
-                    'Wash_product')
+    class_names = ('__background__', '0', '1', '2')
 
     def __init__(self, data_dir, split, transform=None, target_transform=None, keep_difficult=False):
         """Dataset for pick data.
@@ -108,7 +87,7 @@ class PICKDataset(torch.utils.data.Dataset):
         return {"height": im_info[0], "width": im_info[1]}
 
     def _read_image(self, image_id):
-        image_file = os.path.join(self.data_dir, "JPEGImages", "%s.jpg" % image_id)
+        image_file = os.path.join(self.data_dir, "JPEGImages", "%s.jpeg" % image_id)
         image = Image.open(image_file).convert("RGB")
         image = np.array(image)
         return image
