@@ -4,13 +4,13 @@ import os
 class DatasetCatalog:
     DATA_DIR = 'datasets'
     DATASETS = {
-        'picking_trainval': {
+        'picking_train': {
             "data_dir": "PICKING",
             "split": "train"
         },
-        'picking_test': {
+        'picking_val': {
             "data_dir": "PICKING",
-            "split": "test"
+            "split": "val"
         },
         'voc_2007_train': {
             "data_dir": "VOC2007",
