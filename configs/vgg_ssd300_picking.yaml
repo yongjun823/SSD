@@ -3,8 +3,8 @@ MODEL:
 INPUT:
   IMAGE_SIZE: 300
 DATASETS:
-  TRAIN: ("picking_trainval", )
-  TEST: ("picking_test", )
+  TRAIN: ("picking_train", )
+  TEST: ("picking_val", )
 SOLVER:
   MAX_ITER: 120000
   LR_STEPS: [80000, 100000]

@@ -7,7 +7,7 @@ from PIL import Image
 from vizer.draw import draw_boxes
 
 from ssd.config import cfg
-from ssd.data.datasets import COCODataset, VOCDataset
+from ssd.data.datasets import COCODataset, VOCDataset, PICKDataset
 import argparse
 import numpy as np
 
@@ -21,6 +21,8 @@ from ssd.utils.checkpoint import CheckPointer
 def run_demo(cfg, ckpt, score_threshold, images_dir, output_dir, dataset_type):
     if dataset_type == "voc":
         class_names = VOCDataset.class_names
+    elif dataset_type == "pick":
+        class_names = PICKDataset.class_names
     elif dataset_type == 'coco':
         class_names = COCODataset.class_names
     else:
