@@ -179,6 +179,14 @@ You will see a similar output:
 |  Mobilenet V2    |     320     |          68.8                    |   25.5MB   | [model](https://github.com/lufficc/SSD/releases/download/1.2/mobilenet_v2_ssd320_voc0712.pth) |
 |  EfficientNet-B3 |     300     |          73.9                    |   97.1MB   | [model](https://github.com/lufficc/SSD/releases/download/1.2/efficient_net_b3_ssd300_voc0712.pth) |
 
+### Part Bin Picking
+| Backbone         | Input Size  |          mAP                     |  Time (ms) |    FPS   | Download  |
+| :--------------: | :--------:  | :------------------------------: |  :-------: | :------: | :------:  |
+|  VGG16           |     300     |         88.1                     |     14     |     68   | [model](https://drive.google.com/open?id=13oKDDmF-sIsIhpQRoiv5Po2fWUgbeKER)  |
+|  VGG16           |     512     |         88.2                     |     25     |     68   | [model](https://drive.google.com/open?id=1qNCIkjrTaee8RALnCnLGC0dvR7RCwQC0)  |
+|  Mobilenet V2    |     320     |         85.4                     |      9     |    107   | [model](https://drive.google.com/open?id=1AiSC5Mr5QeFZCGF13iWvxombpxvRpYtg)  |
+|  EfficientNet-B3 |     300     |         88.1                     |     17     |     59   | [model](https://drive.google.com/open?id=1w6ny0zshpHubbiUG4vBMnakB5KODs9CA)  |
+
 ## Develop Guide
 
 If you want to add your custom components, please see [DEVELOP_GUIDE.md](DEVELOP_GUIDE.md) for more details.
