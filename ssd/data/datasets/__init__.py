@@ -4,11 +4,13 @@ from ssd.config.path_catlog import DatasetCatalog
 from .voc import VOCDataset
 from .coco import COCODataset
 from .picking import PICKDataset
+from .cotb import COTBDataset
 
 _DATASETS = {
     'VOCDataset': VOCDataset,
     'COCODataset': COCODataset,
-    'PICKDataset': PICKDataset
+    'PICKDataset': PICKDataset,
+    'COTBDataset': COTBDataset
 }
 
 

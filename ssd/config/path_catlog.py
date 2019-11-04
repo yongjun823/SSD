@@ -12,6 +12,14 @@ class DatasetCatalog:
             "data_dir": "PICKING",
             "split": "val"
         },
+        'cotb_train': {
+            "data_dir": "COTB",
+            "split": "train"
+        },
+        'cotb_val': {
+            "data_dir": "COTB",
+            "split": "val"
+        },
         'voc_2007_train': {
             "data_dir": "VOC2007",
             "split": "train"
@@ -86,6 +94,17 @@ class DatasetCatalog:
                 split=attrs["split"],
             )
             return dict(factory="PICKDataset", args=args)
+        elif 'cotb' in name:
+            voc_root = DatasetCatalog.DATA_DIR
+            if 'VOC_ROOT' in os.environ:
+                voc_root = os.environ['VOC_ROOT']
+
+            attrs = DatasetCatalog.DATASETS[name]
+            args = dict(
+                data_dir=os.path.join(voc_root, attrs["data_dir"]),
+                split=attrs["split"],
+            )
+            return dict(factory="COTBDataset", args=args)
         elif "coco" in name:
             coco_root = DatasetCatalog.DATA_DIR
             if 'COCO_ROOT' in os.environ:
