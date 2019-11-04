@@ -8,7 +8,8 @@ from ssd.structures.container import Container
 
 
 class COTBDataset(torch.utils.data.Dataset):
-    class_names = ('Apple_porcelain',
+    class_names = ('__background__',
+        'Apple_porcelain',
         'Beer',
         'Book',
         'Carbonated_drinks',
