@@ -7,7 +7,7 @@ from PIL import Image
 from vizer.draw import draw_boxes
 
 from ssd.config import cfg
-from ssd.data.datasets import COCODataset, VOCDataset, PICKDataset
+from ssd.data.datasets import COCODataset, VOCDataset, PICKDataset, COTBDataset
 import argparse
 import numpy as np
 
@@ -23,6 +23,8 @@ def run_demo(cfg, ckpt, score_threshold, images_dir, output_dir, dataset_type):
         class_names = VOCDataset.class_names
     elif dataset_type == "pick":
         class_names = PICKDataset.class_names
+    elif dataset_type == "cotb":
+        class_names = COTBDataset.class_names
     elif dataset_type == 'coco':
         class_names = COCODataset.class_names
     else:
