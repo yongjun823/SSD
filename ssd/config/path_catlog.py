@@ -18,7 +18,7 @@ class DatasetCatalog:
         },
         'cotb_val': {
             "data_dir": "COTB",
-            "spint": "val"
+            "split": "val"
         },
         'voc_2007_train': {
             "data_dir": "VOC2007",
